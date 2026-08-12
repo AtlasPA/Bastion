@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="#e8e4da"/>
+  <rect x="90" y="60" width="220" height="250" rx="12" fill="#6b7280"/>
+  <rect x="115" y="90" width="170" height="120" rx="6" fill="#374151"/>
+  <rect x="150" y="310" width="100" height="30" rx="4" fill="#4b5563"/>
+  <text x="200" y="165" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#d1d5db">GAME</text>
+</svg>

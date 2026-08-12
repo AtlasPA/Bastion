@@ -1,0 +1,222 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------- Users & auth ----------
+// Auth.js adapter tables (Account, Session, VerificationToken) land in Phase 1.
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      Role     @default(CUSTOMER)
+  createdAt DateTime @default(now())
+
+  orders  Order[]
+  reviews Review[]
+  offers  OfferSubmission[]
+}
+
+// ---------- Catalog ----------
+
+model Category {
+  id       String  @id @default(cuid())
+  name     String
+  slug     String  @unique
+  parentId String?
+
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryTree")
+  products Product[]
+}
+
+// One shared grading scale for games and cards.
+enum Condition {
+  SEALED
+  NM // Near Mint
+  LP // Lightly Played
+  MP // Moderately Played
+  HP // Heavily Played
+  DMG // Damaged
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  SOLD
+  ARCHIVED
+}
+
+model Product {
+  id          String        @id @default(cuid())
+  sku         String        @unique
+  title       String
+  slug        String        @unique
+  description String        @default("")
+  condition   Condition
+  priceCents  Int
+  quantity    Int           @default(1)
+  status      ProductStatus @default(DRAFT)
+  categoryId  String
+
+  // PriceCharting link + cached suggested prices (never auto-applied)
+  priceChartingId String?
+  pcLooseCents    Int?
+  pcCibCents      Int?
+  pcNewCents      Int?
+  pcFetchedAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  category   Category       @relation(fields: [categoryId], references: [id])
+  images     ProductImage[]
+  orderItems OrderItem[]
+  reviews    Review[]
+
+  @@index([status, categoryId])
+  @@index([title])
+}
+
+model ProductImage {
+  id        String @id @default(cuid())
+  productId String
+  url       String
+  sortOrder Int    @default(0)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+// ---------- Orders ----------
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  CANCELLED
+  REFUNDED
+}
+
+model Order {
+  id     String      @id @default(cuid())
+  userId String?
+  email  String
+  status OrderStatus @default(PENDING)
+
+  stripeSessionId       String  @unique
+  stripePaymentIntentId String?
+
+  subtotalCents Int
+  taxCents      Int @default(0)
+  shippingCents Int @default(0)
+  totalCents    Int
+
+  shippingName    String?
+  shippingStreet1 String?
+  shippingStreet2 String?
+  shippingCity    String?
+  shippingState   String?
+  shippingZip     String?
+  shippingCountry String? @default("US")
+
+  shippoTransactionId String?
+  carrier             String?
+  trackingNumber      String?
+  labelUrl            String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User?       @relation(fields: [userId], references: [id])
+  items OrderItem[]
+
+  @@index([status])
+}
+
+model OrderItem {
+  id        String @id @default(cuid())
+  orderId   String
+  productId String
+
+  // Snapshots so order history survives product edits/deletes
+  titleSnapshot      String
+  conditionSnapshot  Condition
+  priceCentsSnapshot Int
+  quantity           Int    @default(1)
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}
+
+// ---------- Offer submissions (customers selling to the store) ----------
+
+enum OfferStatus {
+  NEW
+  REVIEWING
+  OFFER_SENT
+  ACCEPTED
+  DECLINED
+  COMPLETED
+}
+
+model OfferSubmission {
+  id              String      @id @default(cuid())
+  userId          String?
+  name            String
+  email           String
+  description     String
+  askingPriceCents Int?
+  status          OfferStatus @default(NEW)
+  offerCents      Int?
+  adminNotes      String      @default("")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  user   User?        @relation(fields: [userId], references: [id])
+  photos OfferPhoto[]
+
+  @@index([status])
+}
+
+model OfferPhoto {
+  id                String @id @default(cuid())
+  offerSubmissionId String
+  url               String
+
+  submission OfferSubmission @relation(fields: [offerSubmissionId], references: [id], onDelete: Cascade)
+}
+
+// ---------- Reviews ----------
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Review {
+  id        String       @id @default(cuid())
+  productId String
+  userId    String
+  rating    Int // 1-5
+  title     String?
+  body      String
+  status    ReviewStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([productId, userId])
+  @@index([productId, status])
+}
