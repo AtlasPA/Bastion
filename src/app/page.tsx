@@ -16,8 +16,11 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-12">
-      <section className="rounded-xl border bg-muted/40 px-6 py-14 text-center">
-        <h1 className="text-4xl font-bold tracking-tight">
+      <section className="rounded-xl border bg-secondary/50 px-6 py-14 text-center">
+        <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-brand-blue">
+          Bastion GameVault
+        </p>
+        <h1 className="mt-2 font-display text-4xl font-bold tracking-tight">
           Used games and cards, graded honestly.
         </h1>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground">

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Baloo_2, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,26 +13,42 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Rounded display face matching the logo's letterforms.
+const baloo = Baloo_2({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["600", "700"],
+});
+
+function Wordmark({ className = "" }: { className?: string }) {
+  return (
+    <span className={`font-display font-bold uppercase ${className}`}>
+      <span className="text-brand-red">Bastion</span>{" "}
+      <span className="text-brand-blue">GameVault</span>
+    </span>
+  );
+}
+
 export const metadata: Metadata = {
   title: {
-    default: "Bastion — Games & Trading Cards",
-    template: "%s | Bastion",
+    default: "Bastion GameVault — Games & Trading Cards",
+    template: "%s | Bastion GameVault",
   },
   description:
-    "Bastion buys and sells used videogames and trading cards. Browse the shop or send us an offer on your collection.",
+    "Bastion GameVault buys and sells used videogames and trading cards. Browse the shop or send us an offer on your collection.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${baloo.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <header className="border-b">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
-            <Link href="/" className="text-xl font-bold tracking-tight">
-              Bastion
+            <Link href="/" className="text-xl tracking-tight">
+              <Wordmark />
             </Link>
             <nav className="flex items-center gap-6 text-sm font-medium">
               <Link href="/products" className="hover:underline">
@@ -58,8 +74,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </main>
         <footer className="border-t">
           <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Bastion. Used games and cards, graded
-            honestly.
+            © {new Date().getFullYear()} Bastion GameVault. Used games and
+            cards, graded honestly.
           </div>
         </footer>
       </body>
