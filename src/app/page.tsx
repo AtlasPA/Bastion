@@ -3,8 +3,9 @@ import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product-card";
 
-// Home shows live inventory — always render fresh.
-export const dynamic = "force-dynamic";
+// Home shows live inventory; re-render at most once a minute so navigation
+// stays instant even when the free-tier database is waking from idle.
+export const revalidate = 60;
 
 export default async function HomePage() {
   const latest = await db.product.findMany({
@@ -21,11 +22,11 @@ export default async function HomePage() {
           Bastion GameVault
         </p>
         <h1 className="mt-2 font-display text-4xl font-bold tracking-tight">
-          Used games and cards, graded honestly.
+          Retro games and trading cards, bought and sold.
         </h1>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-          Every item at Bastion is inspected, condition-graded, and priced
-          fairly. Browse the shop, or send us an offer on your collection.
+          Browse the shop for videogames and trading cards — or send us an
+          offer on your collection.
         </p>
         <div className="mt-6 flex justify-center gap-3">
           <Button size="lg" render={<Link href="/products" />}>
