@@ -6,6 +6,13 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const db = new PrismaClient({ adapter });
 
 async function main() {
+  // Owner account — signing in with this email gets admin access.
+  await db.user.upsert({
+    where: { email: "sdysart90@gmail.com" },
+    update: { role: "ADMIN" },
+    create: { email: "sdysart90@gmail.com", name: "Owner", role: "ADMIN" },
+  });
+
   const games = await db.category.upsert({
     where: { slug: "video-games" },
     update: {},
