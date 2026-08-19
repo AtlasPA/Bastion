@@ -12,6 +12,7 @@ import {
   uploadImages,
 } from "../actions";
 import { ProductForm } from "../product-form";
+import { PriceChartingPanel } from "../pricecharting-panel";
 
 export const metadata: Metadata = { title: "Edit product" };
 
@@ -46,6 +47,8 @@ export default async function EditProductPage({
       </div>
 
       <ProductForm action={update} categories={categories} product={product} />
+
+      <PriceChartingPanel title={product.title} />
 
       <section className="max-w-xl space-y-3 border-t pt-6">
         <h2 className="font-medium">Photos</h2>

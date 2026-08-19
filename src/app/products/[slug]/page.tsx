@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
+import { SampleReviews } from "@/components/sample-reviews";
 import { CONDITION_LABELS } from "@/lib/conditions";
 import { formatCents } from "@/lib/format";
 
@@ -35,6 +36,7 @@ export default async function ProductPage({
   const image = product.images[0];
 
   return (
+    <div className="space-y-10">
     <div className="grid gap-8 md:grid-cols-2">
       <div className="aspect-square overflow-hidden rounded-lg border bg-muted">
         {image ? (
@@ -74,11 +76,18 @@ export default async function ProductPage({
         )}
 
         <div className="space-y-2">
-          <Button size="lg" disabled title="Checkout coming soon">
-            Add to cart
-          </Button>
+          <AddToCartButton
+            product={{
+              productId: product.id,
+              slug: product.slug,
+              title: product.title,
+              priceCents: product.priceCents,
+              image: image?.url ?? null,
+            }}
+            soldOut={soldOut}
+          />
           <p className="text-xs text-muted-foreground">
-            Online checkout is coming soon.
+            Checkout is in preview — payments go live at launch.
           </p>
         </div>
 
@@ -91,6 +100,8 @@ export default async function ProductPage({
           <dd>{soldOut ? 0 : product.quantity}</dd>
         </dl>
       </div>
+    </div>
+    <SampleReviews />
     </div>
   );
 }

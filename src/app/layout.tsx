@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Baloo_2, Geist, Geist_Mono } from "next/font/google";
+import { CartProvider } from "@/components/cart/cart-context";
+import { CartLink } from "@/components/cart/cart-link";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -45,27 +47,32 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${baloo.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <CartProvider>
         <header className="border-b">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
             <Link href="/" className="text-xl tracking-tight">
               <Wordmark />
             </Link>
-            <nav className="flex items-center gap-6 text-sm font-medium">
+            <nav className="flex items-center gap-5 text-sm font-medium">
               <Link href="/products" className="hover:underline">
                 Shop
               </Link>
               <Link
                 href="/products?category=video-games"
-                className="hover:underline"
+                className="hidden hover:underline sm:inline"
               >
                 Video Games
               </Link>
               <Link
                 href="/products?category=trading-cards"
-                className="hover:underline"
+                className="hidden hover:underline sm:inline"
               >
                 Trading Cards
               </Link>
+              <Link href="/sell-to-us" className="hover:underline">
+                Sell to Us
+              </Link>
+              <CartLink />
             </nav>
           </div>
         </header>
@@ -78,6 +85,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             trade videogames and trading cards.
           </div>
         </footer>
+        </CartProvider>
       </body>
     </html>
   );

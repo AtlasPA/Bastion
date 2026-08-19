@@ -25,6 +25,9 @@ export default async function AdminLayout({
           <Link href="/admin/categories" className="hover:underline">
             Categories
           </Link>
+          <Link href="/admin/orders" className="hover:underline">
+            Orders
+          </Link>
         </nav>
         <div className="flex items-center gap-3">
           <span className="text-xs text-muted-foreground">
