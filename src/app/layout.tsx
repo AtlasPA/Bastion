@@ -3,7 +3,12 @@ import Link from "next/link";
 import { Baloo_2, Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "@/components/cart/cart-context";
 import { CartLink } from "@/components/cart/cart-link";
+import { SettingsMenu } from "@/components/theme/settings-menu";
 import "./globals.css";
+
+// Applies the saved theme before first paint to avoid a flash of the
+// wrong mode. Runs as an inline script at the top of <body>.
+const themeInitScript = `(function(){try{var t=localStorage.getItem("bastion-theme");var d=t==="dark"||((!t||t==="system")&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d)}catch(e){}})();`;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,9 +49,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${baloo.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <CartProvider>
         <header className="border-b">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
@@ -73,6 +80,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 Sell to Us
               </Link>
               <CartLink />
+              <SettingsMenu />
             </nav>
           </div>
         </header>

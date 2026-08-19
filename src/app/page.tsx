@@ -18,12 +18,18 @@ export default async function HomePage() {
   return (
     <div className="space-y-12">
       <section className="rounded-xl border bg-secondary/50 px-6 py-14 text-center">
-        <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-brand-blue">
-          Bastion GameVault
-        </p>
-        <h1 className="mt-2 font-display text-4xl font-bold tracking-tight">
-          Retro games and trading cards, bought and sold.
+        {/* Wordmark styled after the logo: red BASTION, letterspaced blue GAMEVAULT */}
+        <h1 className="font-display uppercase leading-none">
+          <span className="block text-5xl font-bold tracking-tight text-brand-red sm:text-6xl">
+            Bastion
+          </span>
+          <span className="mt-2 block text-xl font-semibold tracking-[0.42em] text-brand-blue sm:text-2xl [text-indent:0.42em]">
+            GameVault
+          </span>
         </h1>
+        <p className="mt-5 font-display text-2xl font-semibold tracking-tight">
+          Retro games and trading cards, bought and sold.
+        </p>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
           Browse the shop for videogames and trading cards — or send us an
           offer on your collection.
