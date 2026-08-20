@@ -1,5 +1,5 @@
 import NextAuth from "next-auth";
-import Resend from "next-auth/providers/resend";
+import SendGrid from "next-auth/providers/sendgrid";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
@@ -13,14 +13,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     verifyRequest: "/login/check-email",
   },
   providers: [
-    Resend({
-      apiKey: process.env.RESEND_API_KEY,
+    SendGrid({
+      apiKey: process.env.SENDGRID_API_KEY,
       from:
         process.env.EMAIL_FROM ??
-        "Bastion GameVault <onboarding@resend.dev>",
+        "Bastion GameVault <login@bastiongamevault.com>",
       // Without an API key (local dev), print the sign-in link to the
       // server console instead of sending an email.
-      ...(process.env.RESEND_API_KEY
+      ...(process.env.SENDGRID_API_KEY
         ? {}
         : {
             async sendVerificationRequest({ identifier, url }) {
