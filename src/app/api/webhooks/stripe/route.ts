@@ -2,6 +2,11 @@ import type Stripe from "stripe";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
+import {
+  newOrderAlertEmail,
+  orderConfirmationEmail,
+  sendEmail,
+} from "@/lib/email";
 
 // Payment truth lives here: orders become PAID and stock decrements ONLY in
 // this webhook — never on the success-page redirect.
@@ -87,6 +92,25 @@ export async function POST(req: Request) {
     revalidatePath("/products");
     for (const item of order.items) {
       revalidatePath(`/products/${item.product.slug}`);
+    }
+
+    // Confirmation to the buyer + alert to the owners. Failures are logged
+    // inside sendEmail and never fail the webhook.
+    const paid = await db.order.findUnique({
+      where: { id: order.id },
+      include: { items: true },
+    });
+    if (paid) {
+      if (paid.email) {
+        const confirmation = orderConfirmationEmail(paid);
+        await sendEmail({ to: paid.email, ...confirmation });
+      }
+      const admins = await db.user.findMany({
+        where: { role: "ADMIN" },
+        select: { email: true },
+      });
+      const alert = newOrderAlertEmail(paid);
+      await sendEmail({ to: admins.map((a) => a.email), ...alert });
     }
   }
 
