@@ -16,10 +16,12 @@ export async function sendEmail({
   to,
   subject,
   html,
+  replyTo,
 }: {
   to: string | string[];
   subject: string;
   html: string;
+  replyTo?: string;
 }) {
   const recipients = (Array.isArray(to) ? to : [to]).filter(Boolean);
   if (recipients.length === 0) return;
@@ -39,6 +41,7 @@ export async function sendEmail({
       body: JSON.stringify({
         personalizations: [{ to: recipients.map((email) => ({ email })) }],
         from: parseFrom(FROM_RAW),
+        ...(replyTo ? { reply_to: { email: replyTo } } : {}),
         subject,
         content: [{ type: "text/html", value: html }],
         tracking_settings: {
@@ -106,6 +109,50 @@ export function newOrderAlertEmail(order: OrderForEmail & { email: string }) {
       <p>${order.email}${order.shippingName ? ` (${order.shippingName})` : ""}</p>
       <table style="width:100%;border-collapse:collapse;font-size:14px">${itemRows(order)}</table>
       <p><a href="https://bastiongamevault.com/admin/orders/${order.id}">Open in admin →</a></p>`),
+  };
+}
+
+export function offerReceivedEmail(name: string) {
+  return {
+    subject: "We got your offer submission — Bastion GameVault",
+    html: wrap(`
+      <h2 style="margin:16px 0 8px">Thanks${name ? `, ${name.split(" ")[0]}` : ""} — we're on it.</h2>
+      <p>We received your photos and details. We'll look everything over and
+      reply with a real offer, usually within a couple of days.</p>`),
+  };
+}
+
+export function offerAlertEmail(submission: {
+  id: string;
+  name: string;
+  email: string;
+  description: string;
+  askingPriceCents: number | null;
+  photoCount: number;
+}) {
+  return {
+    subject: `📦 New sell-to-us offer from ${submission.name}`,
+    html: wrap(`
+      <h2 style="margin:16px 0 8px">New offer submission</h2>
+      <p>${submission.name} (${submission.email}) — ${submission.photoCount} photo${submission.photoCount === 1 ? "" : "s"}${submission.askingPriceCents ? `, asking ${money(submission.askingPriceCents)}` : ""}</p>
+      <p style="white-space:pre-wrap">${submission.description.slice(0, 500)}</p>
+      <p><a href="https://bastiongamevault.com/admin/offers/${submission.id}">Review in admin →</a></p>`),
+  };
+}
+
+export function offerSentEmail(input: {
+  name: string;
+  offerCents: number;
+  message: string;
+}) {
+  return {
+    subject: `Our offer: ${money(input.offerCents)} — Bastion GameVault`,
+    html: wrap(`
+      <h2 style="margin:16px 0 8px">We'd like to buy your items!</h2>
+      <p>Hi${input.name ? ` ${input.name.split(" ")[0]}` : ""}, after reviewing your submission our offer is:</p>
+      <p style="font-size:24px;font-weight:bold;margin:8px 0">${money(input.offerCents)}</p>
+      ${input.message ? `<p style="white-space:pre-wrap">${input.message}</p>` : ""}
+      <p>Just reply to this email to accept, ask questions, or counter.</p>`),
   };
 }
 

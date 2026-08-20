@@ -28,6 +28,12 @@ export default async function AdminLayout({
           <Link href="/admin/orders" className="hover:underline">
             Orders
           </Link>
+          <Link href="/admin/offers" className="hover:underline">
+            Offers
+          </Link>
+          <Link href="/admin/reviews" className="hover:underline">
+            Reviews
+          </Link>
         </nav>
         <div className="flex items-center gap-3">
           <span className="text-xs text-muted-foreground">

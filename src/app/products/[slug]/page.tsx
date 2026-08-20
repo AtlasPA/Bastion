@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
-import { SampleReviews } from "@/components/sample-reviews";
+import { ProductReviews } from "@/components/reviews/product-reviews";
 import { CONDITION_LABELS } from "@/lib/conditions";
 import { formatCents } from "@/lib/format";
 
@@ -101,7 +101,7 @@ export default async function ProductPage({
         </dl>
       </div>
     </div>
-    <SampleReviews />
+    <ProductReviews productId={product.id} slug={product.slug} />
     </div>
   );
 }
