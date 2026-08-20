@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCart } from "@/components/cart/cart-context";
 import { Button } from "@/components/ui/button";
 import { formatCents } from "@/lib/format";
+import { CheckoutButton } from "./checkout-button";
 
 export default function CartPage() {
   const { items, subtotalCents, remove } = useCart();
@@ -66,9 +67,7 @@ export default function CartPage() {
         </span>
       </div>
       <div className="flex justify-end">
-        <Button size="lg" render={<Link href="/checkout" />}>
-          Continue to checkout
-        </Button>
+        <CheckoutButton />
       </div>
     </div>
   );
