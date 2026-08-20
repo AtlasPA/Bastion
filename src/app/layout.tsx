@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Baloo_2, Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { CartProvider } from "@/components/cart/cart-context";
 import { CartLink } from "@/components/cart/cart-link";
 import { SettingsMenu } from "@/components/theme/settings-menu";
@@ -37,12 +38,19 @@ function Wordmark({ className = "" }: { className?: string }) {
 }
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://bastiongamevault.com"),
   title: {
     default: "Bastion GameVault — Games & Trading Cards",
     template: "%s | Bastion GameVault",
   },
   description:
     "Bastion GameVault buys and sells used videogames and trading cards. Browse the shop or send us an offer on your collection.",
+  openGraph: {
+    siteName: "Bastion GameVault",
+    type: "website",
+    images: [{ url: "/logo.jpg", width: 1200, height: 1200 }],
+  },
+  twitter: { card: "summary" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -88,12 +96,32 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <footer className="border-t">
-          <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Bastion GameVault. Buy, sell, and
-            trade videogames and trading cards.
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-sm text-muted-foreground">
+            <span>
+              © {new Date().getFullYear()} Bastion GameVault. Buy, sell, and
+              trade videogames and trading cards.
+            </span>
+            <nav className="flex gap-4 text-xs">
+              <Link href="/returns" className="hover:underline">
+                Returns
+              </Link>
+              <Link href="/terms" className="hover:underline">
+                Terms
+              </Link>
+              <Link href="/privacy" className="hover:underline">
+                Privacy
+              </Link>
+              <a
+                href="mailto:bastiongamevault@gmail.com"
+                className="hover:underline"
+              >
+                Contact
+              </a>
+            </nav>
           </div>
         </footer>
         </CartProvider>
+        <Analytics />
       </body>
     </html>
   );

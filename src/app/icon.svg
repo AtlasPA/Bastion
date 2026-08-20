@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Castle tower favicon in Bastion GameVault brand colors -->
+  <rect width="64" height="64" rx="12" fill="#ffffff"/>
+  <g>
+    <!-- flag -->
+    <rect x="30" y="6" width="2.5" height="12" fill="#2f9ac6"/>
+    <path d="M32.5 6 L46 9.5 L32.5 13 Z" fill="#d92b2f"/>
+    <!-- turret roof -->
+    <path d="M20 26 L32 15 L44 26 Z" fill="#2f9ac6"/>
+    <!-- battlements -->
+    <path d="M20 26 h4 v-4 h4 v4 h8 v-4 h4 v4 h4 v6 H20 Z" fill="#2f9ac6"/>
+    <!-- tower body -->
+    <rect x="22" y="32" width="20" height="26" fill="#2f9ac6"/>
+    <!-- door -->
+    <path d="M28 58 v-9 a4 4 0 0 1 8 0 v9 Z" fill="#ffffff"/>
+    <!-- window -->
+    <rect x="29.5" y="36" width="5" height="7" rx="2.5" fill="#ffffff"/>
+  </g>
+</svg>
