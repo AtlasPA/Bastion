@@ -78,7 +78,7 @@ export function ProductForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         <div className="space-y-1">
           <label className="text-sm font-medium" htmlFor="price">
             Price ($)
@@ -92,6 +92,24 @@ export function ProductForm({
             required
             defaultValue={
               product ? (product.priceCents / 100).toFixed(2) : undefined
+            }
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-sm font-medium" htmlFor="cost">
+            Your cost ($)
+          </label>
+          <Input
+            id="cost"
+            name="cost"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="—"
+            defaultValue={
+              product?.costCents != null
+                ? (product.costCents / 100).toFixed(2)
+                : undefined
             }
           />
         </div>

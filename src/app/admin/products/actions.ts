@@ -14,10 +14,17 @@ const productSchema = z.object({
   condition: z.enum(["SEALED", "NM", "LP", "MP", "HP", "DMG"]),
   status: z.enum(["DRAFT", "ACTIVE", "SOLD", "ARCHIVED"]),
   price: z.coerce.number().min(0, "Price can't be negative"),
+  cost: z.string().trim(),
   quantity: z.coerce.number().int().min(0),
   description: z.string().trim(),
   sku: z.string().trim(),
 });
+
+function parseCostCents(cost: string): number | null {
+  if (!cost) return null;
+  const n = Number(cost);
+  return isFinite(n) && n >= 0 ? Math.round(n * 100) : null;
+}
 
 function parseProductForm(formData: FormData) {
   return productSchema.parse({
@@ -26,6 +33,7 @@ function parseProductForm(formData: FormData) {
     condition: formData.get("condition"),
     status: formData.get("status"),
     price: formData.get("price"),
+    cost: formData.get("cost") ?? "",
     quantity: formData.get("quantity"),
     description: formData.get("description") ?? "",
     sku: formData.get("sku") ?? "",
@@ -69,6 +77,7 @@ export async function createProduct(formData: FormData) {
       condition: data.condition,
       status: data.status,
       priceCents: Math.round(data.price * 100),
+      costCents: parseCostCents(data.cost),
       quantity: data.quantity,
       description: data.description,
     },
@@ -98,6 +107,7 @@ export async function updateProduct(id: string, formData: FormData) {
       condition: data.condition,
       status: data.status,
       priceCents: Math.round(data.price * 100),
+      costCents: parseCostCents(data.cost),
       quantity: data.quantity,
       description: data.description,
     },

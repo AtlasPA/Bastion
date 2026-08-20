@@ -12,7 +12,7 @@ import {
   uploadImages,
 } from "../actions";
 import { ProductForm } from "../product-form";
-import { PriceChartingPanel } from "../pricecharting-panel";
+import { MarketPanel } from "../market-panel";
 
 export const metadata: Metadata = { title: "Edit product" };
 
@@ -48,7 +48,17 @@ export default async function EditProductPage({
 
       <ProductForm action={update} categories={categories} product={product} />
 
-      <PriceChartingPanel title={product.title} />
+      <MarketPanel
+        product={{
+          id: product.id,
+          priceSource: product.priceSource,
+          priceSourceId: product.priceSourceId,
+          marketCents: product.marketCents,
+          marketFetchedAt: product.marketFetchedAt?.toISOString() ?? null,
+          autoPricing: product.autoPricing,
+          costCents: product.costCents,
+        }}
+      />
 
       <section className="max-w-xl space-y-3 border-t pt-6">
         <h2 className="font-medium">Photos</h2>
