@@ -8,12 +8,26 @@ import { ProductCard } from "@/components/product-card";
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const latest = await db.product.findMany({
-    where: { status: "ACTIVE" },
-    include: { images: true },
-    orderBy: { createdAt: "desc" },
-    take: 4,
-  });
+  const [latest, categories] = await Promise.all([
+    db.product.findMany({
+      where: { status: "ACTIVE" },
+      include: { images: true },
+      orderBy: { createdAt: "desc" },
+      take: 4,
+    }),
+    db.category.findMany({
+      include: {
+        _count: { select: { products: { where: { status: "ACTIVE" } } } },
+        products: {
+          where: { status: "ACTIVE" },
+          include: { images: true },
+          orderBy: { createdAt: "desc" },
+          take: 1,
+        },
+      },
+      orderBy: { name: "asc" },
+    }),
+  ]);
 
   return (
     <div className="space-y-12">
@@ -48,9 +62,40 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <section className="grid gap-4 sm:grid-cols-2">
+        {categories.map((category) => {
+          const cover = category.products[0]?.images[0];
+          return (
+            <Link
+              key={category.id}
+              href={`/products?category=${category.slug}`}
+              className="group relative flex h-40 items-end overflow-hidden rounded-xl border bg-secondary/40"
+            >
+              {cover && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={cover.url}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover opacity-25 transition-transform duration-300 group-hover:scale-105"
+                />
+              )}
+              <div className="relative p-5">
+                <h2 className="font-display text-2xl font-bold">
+                  {category.name}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {category._count.products} item
+                  {category._count.products === 1 ? "" : "s"} in stock →
+                </p>
+              </div>
+            </Link>
+          );
+        })}
+      </section>
+
       <section className="space-y-4">
         <div className="flex items-baseline justify-between">
-          <h2 className="text-2xl font-semibold tracking-tight">
+          <h2 className="font-display text-2xl font-semibold tracking-tight">
             Latest arrivals
           </h2>
           <Link
@@ -65,6 +110,21 @@ export default async function HomePage() {
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
+      </section>
+
+      <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border bg-accent/60 px-6 py-8">
+        <div>
+          <h2 className="font-display text-2xl font-bold">
+            Got a collection to sell?
+          </h2>
+          <p className="mt-1 max-w-md text-sm text-muted-foreground">
+            Send us photos and a description — we reply with a real cash
+            offer, usually within a couple of days. No fees, no meetups.
+          </p>
+        </div>
+        <Button size="lg" render={<Link href="/sell-to-us" />}>
+          Get an offer
+        </Button>
       </section>
     </div>
   );

@@ -24,7 +24,8 @@ export type CheckoutResult =
  * Checkout Session URL. The order is marked PAID only by the webhook.
  */
 export async function createCheckoutSession(
-  rawItems: unknown
+  rawItems: unknown,
+  userId?: string | null
 ): Promise<CheckoutResult> {
   const parsed = cartItemsSchema.safeParse(rawItems);
   if (!parsed.success) return { error: "Your cart looks invalid — try again." };
@@ -62,6 +63,7 @@ export async function createCheckoutSession(
   const order = await db.order.create({
     data: {
       email: "",
+      userId: userId ?? null,
       status: "PENDING",
       // Placeholder until the Stripe session exists (column is unique).
       stripeSessionId: `pending_${crypto.randomUUID()}`,

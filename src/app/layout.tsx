@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Baloo_2, Geist, Geist_Mono } from "next/font/google";
+import { UserRound } from "lucide-react";
 import { Analytics } from "@vercel/analytics/next";
 import { CartProvider } from "@/components/cart/cart-context";
 import { CartLink } from "@/components/cart/cart-link";
@@ -88,6 +89,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 Sell to Us
               </Link>
               <CartLink />
+              <Link
+                href="/account"
+                aria-label="Your account"
+                className="inline-flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                <UserRound className="size-4" aria-hidden />
+              </Link>
               <SettingsMenu />
             </nav>
           </div>

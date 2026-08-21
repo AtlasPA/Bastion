@@ -4,8 +4,13 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
+import { ImageGallery } from "@/components/image-gallery";
+import { ProductCard } from "@/components/product-card";
 import { ProductReviews } from "@/components/reviews/product-reviews";
-import { CONDITION_LABELS } from "@/lib/conditions";
+import {
+  CONDITION_BADGE_CLASSES,
+  CONDITION_LABELS,
+} from "@/lib/conditions";
 import { formatCents } from "@/lib/format";
 
 async function getProduct(slug: string) {
@@ -35,19 +40,21 @@ export default async function ProductPage({
   const soldOut = product.status === "SOLD" || product.quantity < 1;
   const image = product.images[0];
 
+  const related = await db.product.findMany({
+    where: {
+      status: "ACTIVE",
+      categoryId: product.categoryId,
+      id: { not: product.id },
+    },
+    include: { images: true },
+    orderBy: { createdAt: "desc" },
+    take: 4,
+  });
+
   return (
     <div className="space-y-10">
     <div className="grid gap-8 md:grid-cols-2">
-      <div className="aspect-square overflow-hidden rounded-lg border bg-muted">
-        {image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={image.url}
-            alt={product.title}
-            className="h-full w-full object-cover"
-          />
-        ) : null}
-      </div>
+      <ImageGallery images={product.images} alt={product.title} />
 
       <div className="space-y-5">
         <div className="space-y-2">
@@ -62,7 +69,7 @@ export default async function ProductPage({
             <span className="text-2xl font-semibold tabular-nums">
               {formatCents(product.priceCents)}
             </span>
-            <Badge variant="secondary">
+            <Badge className={CONDITION_BADGE_CLASSES[product.condition]}>
               {CONDITION_LABELS[product.condition]}
             </Badge>
             {soldOut && <Badge variant="destructive">Sold out</Badge>}
@@ -101,6 +108,18 @@ export default async function ProductPage({
         </dl>
       </div>
     </div>
+    {related.length > 0 && (
+      <section className="space-y-4 border-t pt-8">
+        <h2 className="font-display text-xl font-bold">
+          More {product.category.name.toLowerCase()}
+        </h2>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {related.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </div>
+      </section>
+    )}
     <ProductReviews productId={product.id} slug={product.slug} />
     </div>
   );

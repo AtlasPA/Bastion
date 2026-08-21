@@ -4,6 +4,8 @@ import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { NativeSelect } from "@/components/ui/native-select";
 import { CONDITION_LABELS } from "@/lib/conditions";
 import { formatCents } from "@/lib/format";
 
@@ -16,11 +18,31 @@ const STATUS_VARIANT = {
   ARCHIVED: "outline",
 } as const;
 
-export default async function AdminProductsPage() {
+export default async function AdminProductsPage({
+  searchParams,
+}: PageProps<"/admin/products">) {
   await requireAdmin();
+  const params = await searchParams;
+  const q = typeof params.q === "string" ? params.q.trim() : "";
+  const status = typeof params.status === "string" ? params.status : "";
+
   const products = await db.product.findMany({
+    where: {
+      ...(q
+        ? {
+            OR: [
+              { title: { contains: q, mode: "insensitive" as const } },
+              { sku: { contains: q, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
+      ...(status === "ACTIVE" || status === "DRAFT" || status === "SOLD" || status === "ARCHIVED"
+        ? { status }
+        : {}),
+    },
     include: { category: true },
     orderBy: { updatedAt: "desc" },
+    take: 200,
   });
 
   return (
@@ -31,6 +53,32 @@ export default async function AdminProductsPage() {
           Add product
         </Button>
       </div>
+      <form className="flex flex-wrap items-center gap-2" method="GET">
+        <Input
+          name="q"
+          defaultValue={q}
+          placeholder="Search title or SKU…"
+          className="max-w-xs"
+        />
+        <NativeSelect name="status" defaultValue={status} className="w-36">
+          <option value="">All statuses</option>
+          <option value="ACTIVE">Active</option>
+          <option value="DRAFT">Draft</option>
+          <option value="SOLD">Sold</option>
+          <option value="ARCHIVED">Archived</option>
+        </NativeSelect>
+        <Button type="submit" variant="secondary" size="sm">
+          Filter
+        </Button>
+        {(q || status) && (
+          <Link
+            href="/admin/products"
+            className="text-xs text-muted-foreground hover:underline"
+          >
+            Clear
+          </Link>
+        )}
+      </form>
       <div className="overflow-x-auto rounded-lg border">
         <table className="w-full text-sm">
           <thead>

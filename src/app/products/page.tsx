@@ -12,6 +12,16 @@ export default async function ProductsPage({
   const q = typeof params.q === "string" ? params.q.trim() : "";
   const categorySlug =
     typeof params.category === "string" ? params.category : "";
+  const sort = typeof params.sort === "string" ? params.sort : "newest";
+
+  const orderBy =
+    sort === "price-asc"
+      ? { priceCents: "asc" as const }
+      : sort === "price-desc"
+        ? { priceCents: "desc" as const }
+        : sort === "title"
+          ? { title: "asc" as const }
+          : { createdAt: "desc" as const };
 
   const categories = await db.category.findMany({ orderBy: { name: "asc" } });
 
@@ -22,13 +32,24 @@ export default async function ProductsPage({
       ...(categorySlug ? { category: { slug: categorySlug } } : {}),
     },
     include: { images: true },
-    orderBy: { createdAt: "desc" },
+    orderBy,
   });
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold tracking-tight">Shop</h1>
-      <SearchFilters categories={categories} q={q} category={categorySlug} />
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h1 className="font-display text-3xl font-bold tracking-tight">Shop</h1>
+        <p className="text-sm text-muted-foreground">
+          {products.length} item{products.length === 1 ? "" : "s"}
+          {q ? ` for “${q}”` : ""}
+        </p>
+      </div>
+      <SearchFilters
+        categories={categories}
+        q={q}
+        category={categorySlug}
+        sort={sort}
+      />
       {products.length === 0 ? (
         <p className="py-12 text-center text-muted-foreground">
           Nothing matched{q ? ` “${q}”` : ""}. Try a different search or
