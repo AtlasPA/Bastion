@@ -32,14 +32,15 @@ export default async function HomePage() {
   return (
     <div className="space-y-12">
       <section className="rounded-xl border bg-secondary/50 px-6 py-14 text-center">
-        {/* Wordmark styled after the logo: red BASTION, letterspaced blue GAMEVAULT */}
-        <h1 className="font-display uppercase leading-none">
-          <span className="block text-5xl font-bold tracking-tight text-brand-red sm:text-6xl">
-            Bastion
-          </span>
-          <span className="mt-2 block text-xl font-semibold tracking-[0.42em] text-brand-blue sm:text-2xl [text-indent:0.42em]">
-            GameVault
-          </span>
+        <h1 className="flex justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="Bastion GameVault"
+            width={420}
+            height={189}
+            className="w-72 max-w-full sm:w-[420px]"
+          />
         </h1>
         <p className="mt-5 font-display text-2xl font-semibold tracking-tight">
           Retro games and trading cards, bought and sold.

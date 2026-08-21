@@ -29,14 +29,6 @@ const baloo = Baloo_2({
   weight: ["600", "700"],
 });
 
-function Wordmark({ className = "" }: { className?: string }) {
-  return (
-    <span className={`font-display font-bold uppercase ${className}`}>
-      <span className="text-brand-red">Bastion</span>{" "}
-      <span className="text-brand-blue">GameVault</span>
-    </span>
-  );
-}
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bastiongamevault.com"),
@@ -66,8 +58,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <CartProvider>
         <header className="border-b">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
-            <Link href="/" className="text-xl tracking-tight">
-              <Wordmark />
+            <Link href="/" className="shrink-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.png"
+                alt="Bastion GameVault"
+                width={100}
+                height={45}
+                className="h-9 w-auto sm:h-10"
+              />
             </Link>
             <nav className="flex items-center gap-5 text-sm font-medium">
               <Link href="/products" className="hover:underline">
