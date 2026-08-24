@@ -15,13 +15,13 @@ export function ImageGallery({
 
   return (
     <div className="space-y-2">
-      <div className="aspect-square overflow-hidden rounded-lg border bg-muted">
+      <div className="aspect-square overflow-hidden rounded-lg border bg-muted p-4">
         {current && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={current.url}
             alt={alt}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain"
           />
         )}
       </div>

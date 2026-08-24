@@ -19,18 +19,24 @@ export function ProductCard({ product }: { product: ProductWithImages }) {
       href={`/products/${product.slug}`}
       className="group rounded-lg border bg-card transition-shadow hover:shadow-md"
     >
-      <div className="aspect-square overflow-hidden rounded-t-lg bg-muted">
+      <div className="aspect-square overflow-hidden rounded-t-lg bg-muted p-3">
         {image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={image.url}
             alt={product.title}
-            className="h-full w-full object-cover transition-transform group-hover:scale-105"
+            className="h-full w-full object-contain transition-transform group-hover:scale-105"
           />
         ) : null}
       </div>
       <div className="space-y-2 p-4">
-        <h3 className="line-clamp-2 text-sm font-medium leading-snug">
+        <h3
+          className={`line-clamp-2 text-sm font-semibold leading-snug ${
+            product.category.slug === CONDITION_CATEGORY_SLUG
+              ? "text-brand-blue"
+              : "text-brand-red"
+          }`}
+        >
           {product.title}
         </h3>
         <div className="flex items-center justify-between">

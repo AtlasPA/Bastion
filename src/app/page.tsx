@@ -32,19 +32,9 @@ export default async function HomePage() {
   return (
     <div className="space-y-12">
       <section className="rounded-xl border bg-secondary/50 px-6 py-14 text-center">
-        <h1 className="flex justify-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo.png"
-            alt="Bastion GameVault"
-            width={420}
-            height={189}
-            className="w-72 max-w-full sm:w-[420px]"
-          />
-        </h1>
-        <p className="mt-5 font-display text-2xl font-semibold tracking-tight">
+        <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
           Retro games and trading cards, bought and sold.
-        </p>
+        </h1>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
           Browse the shop for videogames and trading cards — or send us an
           offer on your collection.
