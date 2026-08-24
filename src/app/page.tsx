@@ -43,13 +43,6 @@ export default async function HomePage() {
           <Button size="lg" render={<Link href="/products" />}>
             Browse the shop
           </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            render={<Link href="/products?category=trading-cards" />}
-          >
-            Trading cards
-          </Button>
         </div>
       </section>
 
