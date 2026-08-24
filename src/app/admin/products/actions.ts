@@ -11,7 +11,8 @@ import { slugify } from "@/lib/slug";
 const productSchema = z.object({
   title: z.string().trim().min(1, "Title is required"),
   categoryId: z.string().min(1, "Category is required"),
-  condition: z.enum(["SEALED", "NM", "LP", "MP", "HP", "DMG"]),
+  // Store policy: Lightly Played or better only.
+  condition: z.enum(["SEALED", "NM", "LP"]),
   status: z.enum(["DRAFT", "ACTIVE", "SOLD", "ARCHIVED"]),
   price: z.coerce.number().min(0, "Price can't be negative"),
   cost: z.string().trim(),

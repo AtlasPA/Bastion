@@ -2,13 +2,14 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import {
   CONDITION_BADGE_CLASSES,
+  CONDITION_CATEGORY_SLUG,
   CONDITION_LABELS,
 } from "@/lib/conditions";
 import { formatCents } from "@/lib/format";
 import type { Prisma } from "@/generated/prisma/client";
 
 export type ProductWithImages = Prisma.ProductGetPayload<{
-  include: { images: true };
+  include: { images: true; category: true };
 }>;
 
 export function ProductCard({ product }: { product: ProductWithImages }) {
@@ -36,9 +37,11 @@ export function ProductCard({ product }: { product: ProductWithImages }) {
           <span className="font-semibold tabular-nums">
             {formatCents(product.priceCents)}
           </span>
-          <Badge className={CONDITION_BADGE_CLASSES[product.condition]}>
-            {CONDITION_LABELS[product.condition]}
-          </Badge>
+          {product.category.slug === CONDITION_CATEGORY_SLUG && (
+            <Badge className={CONDITION_BADGE_CLASSES[product.condition]}>
+              {CONDITION_LABELS[product.condition]}
+            </Badge>
+          )}
         </div>
       </div>
     </Link>

@@ -17,10 +17,12 @@ export default function TermsPage() {
 
       <h2>Condition of items</h2>
       <p>
-        Everything we sell is pre-owned unless marked Sealed. Each listing
-        shows a condition label (Near Mint, Lightly Played, Moderately Played,
-        Heavily Played, Damaged) and photos of the actual item you&apos;ll
-        receive. Games are tested and working unless stated otherwise.
+        Everything we sell is pre-owned unless marked Sealed. We only buy and
+        sell items in Lightly Played condition or better. Trading cards carry
+        a condition label (Sealed, Near Mint, or Lightly Played). Videogames
+        and hardware aren&apos;t condition-graded — each listing describes and
+        photographs the actual item you&apos;ll receive, and games are tested
+        and working unless stated otherwise.
       </p>
 
       <h2>Orders and pricing</h2>

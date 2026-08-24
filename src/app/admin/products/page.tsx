@@ -105,7 +105,11 @@ export default async function AdminProductsPage({
                 </td>
                 <td className="px-3 py-2 font-mono text-xs">{p.sku}</td>
                 <td className="px-3 py-2">{p.category.name}</td>
-                <td className="px-3 py-2">{CONDITION_LABELS[p.condition]}</td>
+                <td className="px-3 py-2">
+                  {p.category.slug === "trading-cards"
+                    ? CONDITION_LABELS[p.condition]
+                    : "—"}
+                </td>
                 <td className="px-3 py-2 tabular-nums">
                   {formatCents(p.priceCents)}
                 </td>

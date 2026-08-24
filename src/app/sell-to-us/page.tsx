@@ -64,7 +64,8 @@ export default function SellToUsPage() {
         <p className="text-muted-foreground">
           Clearing out a collection? Send photos and a description — we&apos;ll
           reply with a real cash offer. No listing fees, no haggling in a
-          parking lot.
+          parking lot. Heads up: we only buy items in Lightly Played condition
+          or better.
         </p>
       </div>
 

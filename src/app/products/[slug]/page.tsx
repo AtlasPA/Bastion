@@ -9,6 +9,7 @@ import { ProductCard } from "@/components/product-card";
 import { ProductReviews } from "@/components/reviews/product-reviews";
 import {
   CONDITION_BADGE_CLASSES,
+  CONDITION_CATEGORY_SLUG,
   CONDITION_LABELS,
 } from "@/lib/conditions";
 import { formatCents } from "@/lib/format";
@@ -46,7 +47,7 @@ export default async function ProductPage({
       categoryId: product.categoryId,
       id: { not: product.id },
     },
-    include: { images: true },
+    include: { images: true, category: true },
     orderBy: { createdAt: "desc" },
     take: 4,
   });
@@ -69,9 +70,11 @@ export default async function ProductPage({
             <span className="text-2xl font-semibold tabular-nums">
               {formatCents(product.priceCents)}
             </span>
-            <Badge className={CONDITION_BADGE_CLASSES[product.condition]}>
-              {CONDITION_LABELS[product.condition]}
-            </Badge>
+            {product.category.slug === CONDITION_CATEGORY_SLUG && (
+              <Badge className={CONDITION_BADGE_CLASSES[product.condition]}>
+                {CONDITION_LABELS[product.condition]}
+              </Badge>
+            )}
             {soldOut && <Badge variant="destructive">Sold out</Badge>}
           </div>
         </div>
@@ -101,8 +104,12 @@ export default async function ProductPage({
         <dl className="grid max-w-xs grid-cols-2 gap-y-1 border-t pt-4 text-sm">
           <dt className="text-muted-foreground">SKU</dt>
           <dd className="font-mono">{product.sku}</dd>
-          <dt className="text-muted-foreground">Condition</dt>
-          <dd>{CONDITION_LABELS[product.condition]}</dd>
+          {product.category.slug === CONDITION_CATEGORY_SLUG && (
+            <>
+              <dt className="text-muted-foreground">Condition</dt>
+              <dd>{CONDITION_LABELS[product.condition]}</dd>
+            </>
+          )}
           <dt className="text-muted-foreground">In stock</dt>
           <dd>{soldOut ? 0 : product.quantity}</dd>
         </dl>

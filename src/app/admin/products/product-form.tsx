@@ -1,10 +1,17 @@
+"use client";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   NativeSelect,
   NativeTextarea,
 } from "@/components/ui/native-select";
-import { CONDITION_LABELS } from "@/lib/conditions";
+import {
+  CONDITION_CATEGORY_SLUG,
+  CONDITION_LABELS,
+  SELLABLE_CONDITIONS,
+} from "@/lib/conditions";
 import type { Category, Product } from "@/generated/prisma/client";
 
 const STATUS_LABELS = {
@@ -23,6 +30,12 @@ export function ProductForm({
   categories: Category[];
   product?: Product;
 }) {
+  const [categoryId, setCategoryId] = useState(product?.categoryId ?? "");
+  // Only trading cards carry a condition; games/hardware aren't graded.
+  const showCondition =
+    categories.find((c) => c.id === categoryId)?.slug ===
+    CONDITION_CATEGORY_SLUG;
+
   return (
     <form action={action} className="max-w-xl space-y-4">
       <div className="space-y-1">
@@ -47,7 +60,8 @@ export function ProductForm({
             id="categoryId"
             name="categoryId"
             required
-            defaultValue={product?.categoryId ?? ""}
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
           >
             <option value="" disabled>
               Choose…
@@ -59,23 +73,34 @@ export function ProductForm({
             ))}
           </NativeSelect>
         </div>
-        <div className="space-y-1">
-          <label className="text-sm font-medium" htmlFor="condition">
-            Condition
-          </label>
-          <NativeSelect
-            id="condition"
-            name="condition"
-            required
-            defaultValue={product?.condition ?? "NM"}
-          >
-            {Object.entries(CONDITION_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </NativeSelect>
-        </div>
+        {showCondition ? (
+          <div className="space-y-1">
+            <label className="text-sm font-medium" htmlFor="condition">
+              Condition
+            </label>
+            <NativeSelect
+              id="condition"
+              name="condition"
+              required
+              defaultValue={
+                product && SELLABLE_CONDITIONS.includes(product.condition as never)
+                  ? product.condition
+                  : "NM"
+              }
+            >
+              {SELLABLE_CONDITIONS.map((value) => (
+                <option key={value} value={value}>
+                  {CONDITION_LABELS[value]}
+                </option>
+              ))}
+            </NativeSelect>
+            <p className="text-xs text-muted-foreground">
+              We only sell Lightly Played or better.
+            </p>
+          </div>
+        ) : (
+          <input type="hidden" name="condition" value="NM" />
+        )}
       </div>
 
       <div className="grid grid-cols-4 gap-4">

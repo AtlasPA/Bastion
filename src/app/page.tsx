@@ -11,7 +11,7 @@ export default async function HomePage() {
   const [latest, categories] = await Promise.all([
     db.product.findMany({
       where: { status: "ACTIVE" },
-      include: { images: true },
+      include: { images: true, category: true },
       orderBy: { createdAt: "desc" },
       take: 4,
     }),

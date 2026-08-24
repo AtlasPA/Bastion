@@ -9,6 +9,11 @@ export const CONDITION_LABELS: Record<Condition, string> = {
   DMG: "Damaged",
 };
 
+// Store policy: we only buy and sell Lightly Played or better, and only
+// trading cards carry a condition label (games aren't condition-graded).
+export const SELLABLE_CONDITIONS = ["SEALED", "NM", "LP"] as const;
+export const CONDITION_CATEGORY_SLUG = "trading-cards";
+
 // Color-coded badge styling: green (best) through red (worst).
 export const CONDITION_BADGE_CLASSES: Record<Condition, string> = {
   SEALED:

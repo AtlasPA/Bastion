@@ -31,7 +31,7 @@ export default async function ProductsPage({
       ...(q ? { title: { contains: q, mode: "insensitive" } } : {}),
       ...(categorySlug ? { category: { slug: categorySlug } } : {}),
     },
-    include: { images: true },
+    include: { images: true, category: true },
     orderBy,
   });
 
