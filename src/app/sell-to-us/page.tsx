@@ -67,6 +67,16 @@ export default function SellToUsPage() {
           parking lot. Heads up: we only buy items in Lightly Played condition
           or better.
         </p>
+        <p className="text-sm text-muted-foreground">
+          Wondering what eBay or TCGplayer fees would eat instead?{" "}
+          <a
+            href="/payout-calculator"
+            className="underline hover:no-underline"
+          >
+            Run the numbers
+          </a>
+          .
+        </p>
       </div>
 
       <form

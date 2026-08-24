@@ -44,6 +44,11 @@ export const metadata: Metadata = {
     images: [{ url: "/logo.jpg", width: 1200, height: 1200 }],
   },
   twitter: { card: "summary" },
+  // Hidden from search engines until launch: set SITE_INDEXABLE=1 in Vercel
+  // once Stripe is live so Google's first crawl sees a working store.
+  ...(process.env.SITE_INDEXABLE === "1"
+    ? {}
+    : { robots: { index: false, follow: false } }),
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -108,7 +113,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               © {new Date().getFullYear()} Bastion GameVault. Buy, sell, and
               trade videogames and trading cards.
             </span>
-            <nav className="flex gap-4 text-xs">
+            <nav className="flex flex-wrap gap-4 text-xs">
+              <Link href="/about" className="hover:underline">
+                About
+              </Link>
+              <Link href="/payout-calculator" className="hover:underline">
+                Fee Calculator
+              </Link>
               <Link href="/returns" className="hover:underline">
                 Returns
               </Link>

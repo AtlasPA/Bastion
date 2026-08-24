@@ -31,6 +31,8 @@ The store lives at **https://bastiongamevault.com**. This file is the "how do I�
 4. Vercel: upgrade to Pro ($20/mo) — the free tier does not permit commercial use.
 5. Hand the new keys to Claude (or update them in Vercel → Project → Settings → Environment Variables): `STRIPE_SECRET_KEY`, a NEW live webhook + `STRIPE_WEBHOOK_SECRET`, `SHIPPO_API_TOKEN`, `SHIP_FROM_*`, and set `STRIPE_TAX_ENABLED=1`.
 6. Make one real small purchase end to end, then refund it.
+7. Set `SITE_INDEXABLE=1` in Vercel env vars and redeploy — until then the whole site tells search engines "don't index me yet", so Google's first impression isn't a store that can't take money.
+8. Fill in the About page (`src/app/about/page.tsx`): real name(s), a photo of the shop/inventory, and a business address if comfortable — the single biggest trust signal for people mailing in collections.
 
 ## For developers / AI assistants
 

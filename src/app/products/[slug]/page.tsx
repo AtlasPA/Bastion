@@ -26,7 +26,30 @@ export async function generateMetadata({
 }: PageProps<"/products/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
-  return { title: product?.title ?? "Not found" };
+  if (!product) return { title: "Not found" };
+
+  const description = (
+    product.description ||
+    `${product.title} — available now at Bastion GameVault.`
+  ).slice(0, 155);
+  const image = product.images[0]?.url;
+
+  return {
+    title: product.title,
+    description,
+    alternates: { canonical: `/products/${product.slug}` },
+    openGraph: {
+      title: product.title,
+      description,
+      url: `/products/${product.slug}`,
+      images: image?.startsWith("https://")
+        ? [{ url: image }]
+        : [{ url: "/logo.jpg" }],
+    },
+    twitter: {
+      card: image?.startsWith("https://") ? "summary_large_image" : "summary",
+    },
+  };
 }
 
 export default async function ProductPage({
@@ -52,8 +75,40 @@ export default async function ProductPage({
     take: 4,
   });
 
+  // Product structured data: price, availability, and condition for search
+  // engines and Merchant Center free listings.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    sku: product.sku,
+    description: product.description || undefined,
+    category: product.category.name,
+    image: product.images
+      .map((i) => i.url)
+      .filter((u) => u.startsWith("https://")),
+    offers: {
+      "@type": "Offer",
+      url: `https://bastiongamevault.com/products/${product.slug}`,
+      priceCurrency: "USD",
+      price: (product.priceCents / 100).toFixed(2),
+      availability: soldOut
+        ? "https://schema.org/OutOfStock"
+        : "https://schema.org/InStock",
+      itemCondition:
+        product.condition === "SEALED"
+          ? "https://schema.org/NewCondition"
+          : "https://schema.org/UsedCondition",
+      seller: { "@type": "Organization", name: "Bastion GameVault" },
+    },
+  };
+
   return (
     <div className="space-y-10">
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
     <div className="grid gap-8 md:grid-cols-2">
       <ImageGallery images={product.images} alt={product.title} />
 
