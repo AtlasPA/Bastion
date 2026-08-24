@@ -23,12 +23,6 @@ export function ProductCard({ product }: { product: ProductWithImages }) {
       <div className="relative flex aspect-square flex-col items-center overflow-hidden rounded-t-lg bg-black p-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logo.png" alt="" className="h-6 w-auto shrink-0" />
-        <span aria-hidden className="absolute left-2 top-9 text-xs">
-          ✨
-        </span>
-        <span aria-hidden className="absolute right-2 top-2 text-xs">
-          ✨
-        </span>
         {image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img

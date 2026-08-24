@@ -19,12 +19,6 @@ export function ImageGallery({
       <div className="relative flex aspect-square flex-col items-center overflow-hidden rounded-lg border bg-black p-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/logo.png" alt="" className="h-9 w-auto shrink-0" />
-        <span aria-hidden className="absolute left-3 top-16 text-lg">
-          ✨
-        </span>
-        <span aria-hidden className="absolute right-3 top-4 text-lg">
-          ✨
-        </span>
         {current && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
