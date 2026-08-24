@@ -15,13 +15,22 @@ export function ImageGallery({
 
   return (
     <div className="space-y-2">
-      <div className="aspect-square overflow-hidden rounded-lg border bg-muted p-4">
+      {/* Branded tile: black field, wordmark on top, product floating below */}
+      <div className="relative flex aspect-square flex-col items-center overflow-hidden rounded-lg border bg-black p-4">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo.png" alt="" className="h-9 w-auto shrink-0" />
+        <span aria-hidden className="absolute left-3 top-16 text-lg">
+          ✨
+        </span>
+        <span aria-hidden className="absolute right-3 top-4 text-lg">
+          ✨
+        </span>
         {current && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={current.url}
             alt={alt}
-            className="h-full w-full object-contain"
+            className="min-h-0 w-full flex-1 object-contain pt-3"
           />
         )}
       </div>
@@ -34,7 +43,7 @@ export function ImageGallery({
               onClick={() => setSelected(i)}
               aria-label={`Photo ${i + 1}`}
               className={cn(
-                "aspect-square overflow-hidden rounded-md border bg-muted transition-opacity",
+                "aspect-square overflow-hidden rounded-md border bg-black p-1 transition-opacity",
                 i === selected
                   ? "ring-2 ring-ring"
                   : "opacity-70 hover:opacity-100"
@@ -44,7 +53,7 @@ export function ImageGallery({
               <img
                 src={image.url}
                 alt=""
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
               />
             </button>
           ))}
