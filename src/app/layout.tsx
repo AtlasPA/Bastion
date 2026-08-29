@@ -92,6 +92,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/sell-to-us" className="hover:underline">
                 Sell to Us
               </Link>
+              <Link href="/repairs" className="hover:underline">
+                Repairs
+              </Link>
               <CartLink />
               <Link
                 href="/account"

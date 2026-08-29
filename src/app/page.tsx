@@ -96,19 +96,31 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="flex flex-wrap items-center justify-between gap-4 rounded-xl border bg-accent/60 px-6 py-8">
-        <div>
+      <section className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-3 rounded-xl border bg-accent/60 px-6 py-8">
           <h2 className="font-display text-2xl font-bold">
             Got a collection to sell?
           </h2>
-          <p className="mt-1 max-w-md text-sm text-muted-foreground">
+          <p className="max-w-md text-sm text-muted-foreground">
             Send us photos and a description — we reply with a real cash
             offer, usually within a couple of days. No fees, no meetups.
           </p>
+          <Button size="lg" render={<Link href="/sell-to-us" />}>
+            Get an offer
+          </Button>
         </div>
-        <Button size="lg" render={<Link href="/sell-to-us" />}>
-          Get an offer
-        </Button>
+        <div className="space-y-3 rounded-xl border bg-secondary/50 px-6 py-8">
+          <h2 className="font-display text-2xl font-bold">
+            Console acting up?
+          </h2>
+          <p className="max-w-md text-sm text-muted-foreground">
+            Cartridge slots, disc drives, drift, no video — we repair the
+            consoles we collect. Free diagnosis, quote before any work.
+          </p>
+          <Button size="lg" variant="outline" render={<Link href="/repairs" />}>
+            Get a repair quote
+          </Button>
+        </div>
       </section>
     </div>
   );

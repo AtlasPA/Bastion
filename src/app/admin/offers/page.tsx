@@ -26,7 +26,7 @@ export default async function AdminOffersPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="font-display text-2xl font-bold">Offer submissions</h1>
+      <h1 className="font-display text-2xl font-bold">Offers &amp; repairs</h1>
       <div className="overflow-x-auto rounded-lg border">
         <table className="w-full text-sm">
           <thead>
@@ -55,6 +55,11 @@ export default async function AdminOffersPage() {
                   </Link>
                 </td>
                 <td className="px-3 py-2">
+                  {o.type === "REPAIR" && (
+                    <span className="mr-1" title="Repair request">
+                      🔧
+                    </span>
+                  )}
                   {o.name}
                   <span className="block text-xs text-muted-foreground">
                     {o.email}

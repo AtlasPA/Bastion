@@ -248,8 +248,15 @@ enum OfferStatus {
   COMPLETED
 }
 
+// One inbox for both: collection buy offers and console repair requests.
+enum SubmissionType {
+  OFFER
+  REPAIR
+}
+
 model OfferSubmission {
-  id              String      @id @default(cuid())
+  id              String         @id @default(cuid())
+  type            SubmissionType @default(OFFER)
   userId          String?
   name            String
   email           String

@@ -56,6 +56,7 @@ export async function sendOffer(id: string, formData: FormData) {
     name: submission.name,
     offerCents,
     message: parsed.data.message,
+    type: submission.type,
   });
   await sendEmail({
     to: submission.email,

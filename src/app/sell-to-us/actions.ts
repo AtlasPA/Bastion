@@ -21,6 +21,14 @@ const MAX_PHOTOS = 8;
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024;
 
 export async function submitOffer(formData: FormData) {
+  return submitRequest(formData, "OFFER");
+}
+
+export async function submitRepair(formData: FormData) {
+  return submitRequest(formData, "REPAIR");
+}
+
+async function submitRequest(formData: FormData, type: "OFFER" | "REPAIR") {
   const parsed = offerSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -46,7 +54,8 @@ export async function submitOffer(formData: FormData) {
         f instanceof File && f.size > 0 && f.type.startsWith("image/")
     )
     .slice(0, MAX_PHOTOS);
-  if (photos.length === 0) {
+  // Photos are required to price a collection; optional for repair requests.
+  if (photos.length === 0 && type === "OFFER") {
     return { error: "Add at least one photo so we can make a fair offer." };
   }
   if (photos.some((p) => p.size > MAX_PHOTO_BYTES)) {
@@ -57,6 +66,7 @@ export async function submitOffer(formData: FormData) {
 
   const submission = await db.offerSubmission.create({
     data: {
+      type,
       userId: session?.user?.id ?? null,
       name: data.name,
       email: data.email,
@@ -75,7 +85,7 @@ export async function submitOffer(formData: FormData) {
     });
   }
 
-  const received = offerReceivedEmail(data.name);
+  const received = offerReceivedEmail(data.name, type);
   await sendEmail({ to: data.email, ...received });
 
   const admins = await db.user.findMany({
@@ -84,6 +94,7 @@ export async function submitOffer(formData: FormData) {
   });
   const alert = offerAlertEmail({
     id: submission.id,
+    type,
     name: data.name,
     email: data.email,
     description: data.description,

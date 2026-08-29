@@ -28,7 +28,8 @@ export default async function AdminOfferPage({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold">
-            Offer from {offer.name}
+            {offer.type === "REPAIR" ? "🔧 Repair request" : "Offer"} from{" "}
+            {offer.name}
           </h1>
           <Badge>{offer.status.replace("_", " ")}</Badge>
         </div>
@@ -89,7 +90,9 @@ export default async function AdminOfferPage({
 
       {(offer.status === "NEW" || offer.status === "REVIEWING") && (
         <section className="space-y-3 rounded-lg border bg-card p-4">
-          <h2 className="text-sm font-semibold">Send an offer</h2>
+          <h2 className="text-sm font-semibold">
+            {offer.type === "REPAIR" ? "Send a repair quote" : "Send an offer"}
+          </h2>
           <SendOfferForm
             action={sendOffer.bind(null, offer.id)}
             defaultAmount={

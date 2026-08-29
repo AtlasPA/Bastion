@@ -41,6 +41,14 @@ export default function TermsPage() {
         photos and descriptions submitted.
       </p>
 
+      <h2>Repairs</h2>
+      <p>
+        Console repairs are quoted per device after we hear what&apos;s wrong
+        — no work begins until you approve the quote in writing. If we
+        can&apos;t fix it, you don&apos;t pay for the attempt; return
+        shipping on mail-in repairs is at cost.
+      </p>
+
       <h2>Returns</h2>
       <p>See our Returns Policy for the details.</p>
 

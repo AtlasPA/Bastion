@@ -112,11 +112,24 @@ export function newOrderAlertEmail(order: OrderForEmail & { email: string }) {
   };
 }
 
-export function offerReceivedEmail(name: string) {
+type SubmissionKind = "OFFER" | "REPAIR";
+
+export function offerReceivedEmail(name: string, type: SubmissionKind = "OFFER") {
+  const first = name ? `, ${name.split(" ")[0]}` : "";
+  if (type === "REPAIR") {
+    return {
+      subject: "We got your repair request — Bastion GameVault",
+      html: wrap(`
+        <h2 style="margin:16px 0 8px">Thanks${first} — we're on it.</h2>
+        <p>We received your console repair request. We'll look it over and
+        reply with a quote, usually within a couple of days. No work happens
+        until you approve the quote.</p>`),
+    };
+  }
   return {
     subject: "We got your offer submission — Bastion GameVault",
     html: wrap(`
-      <h2 style="margin:16px 0 8px">Thanks${name ? `, ${name.split(" ")[0]}` : ""} — we're on it.</h2>
+      <h2 style="margin:16px 0 8px">Thanks${first} — we're on it.</h2>
       <p>We received your photos and details. We'll look everything over and
       reply with a real offer, usually within a couple of days.</p>`),
   };
@@ -124,17 +137,21 @@ export function offerReceivedEmail(name: string) {
 
 export function offerAlertEmail(submission: {
   id: string;
+  type?: SubmissionKind;
   name: string;
   email: string;
   description: string;
   askingPriceCents: number | null;
   photoCount: number;
 }) {
+  const repair = submission.type === "REPAIR";
   return {
-    subject: `📦 New sell-to-us offer from ${submission.name}`,
+    subject: repair
+      ? `🔧 New repair request from ${submission.name}`
+      : `📦 New sell-to-us offer from ${submission.name}`,
     html: wrap(`
-      <h2 style="margin:16px 0 8px">New offer submission</h2>
-      <p>${submission.name} (${submission.email}) — ${submission.photoCount} photo${submission.photoCount === 1 ? "" : "s"}${submission.askingPriceCents ? `, asking ${money(submission.askingPriceCents)}` : ""}</p>
+      <h2 style="margin:16px 0 8px">${repair ? "New repair request" : "New offer submission"}</h2>
+      <p>${submission.name} (${submission.email}) — ${submission.photoCount} photo${submission.photoCount === 1 ? "" : "s"}${submission.askingPriceCents ? `, budget ${money(submission.askingPriceCents)}` : ""}</p>
       <p style="white-space:pre-wrap">${submission.description.slice(0, 500)}</p>
       <p><a href="https://bastiongamevault.com/admin/offers/${submission.id}">Review in admin →</a></p>`),
   };
@@ -144,12 +161,26 @@ export function offerSentEmail(input: {
   name: string;
   offerCents: number;
   message: string;
+  type?: SubmissionKind;
 }) {
+  const first = input.name ? ` ${input.name.split(" ")[0]}` : "";
+  if (input.type === "REPAIR") {
+    return {
+      subject: `Your repair quote: ${money(input.offerCents)} — Bastion GameVault`,
+      html: wrap(`
+        <h2 style="margin:16px 0 8px">Here's your repair quote</h2>
+        <p>Hi${first}, after looking over your request, we can do the repair for:</p>
+        <p style="font-size:24px;font-weight:bold;margin:8px 0">${money(input.offerCents)}</p>
+        ${input.message ? `<p style="white-space:pre-wrap">${input.message}</p>` : ""}
+        <p>Reply to this email to approve the quote, ask questions, or arrange
+        drop-off/shipping. No work starts until you say go.</p>`),
+    };
+  }
   return {
     subject: `Our offer: ${money(input.offerCents)} — Bastion GameVault`,
     html: wrap(`
       <h2 style="margin:16px 0 8px">We'd like to buy your items!</h2>
-      <p>Hi${input.name ? ` ${input.name.split(" ")[0]}` : ""}, after reviewing your submission our offer is:</p>
+      <p>Hi${first}, after reviewing your submission our offer is:</p>
       <p style="font-size:24px;font-weight:bold;margin:8px 0">${money(input.offerCents)}</p>
       ${input.message ? `<p style="white-space:pre-wrap">${input.message}</p>` : ""}
       <p>Just reply to this email to accept, ask questions, or counter.</p>`),
