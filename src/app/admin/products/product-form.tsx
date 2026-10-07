@@ -82,13 +82,17 @@ export function ProductForm({
               id="condition"
               name="condition"
               required
-              defaultValue={
-                product && SELLABLE_CONDITIONS.includes(product.condition as never)
-                  ? product.condition
-                  : "NM"
-              }
+              defaultValue={product?.condition ?? "NM"}
             >
-              {SELLABLE_CONDITIONS.map((value) => (
+              {/* Keep a below-policy condition selectable on items that
+                  already carry it, so editing doesn't silently upgrade it. */}
+              {[
+                ...SELLABLE_CONDITIONS,
+                ...(product &&
+                !SELLABLE_CONDITIONS.includes(product.condition as never)
+                  ? [product.condition]
+                  : []),
+              ].map((value) => (
                 <option key={value} value={value}>
                   {CONDITION_LABELS[value]}
                 </option>
