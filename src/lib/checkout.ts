@@ -2,7 +2,11 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
 
-export const FLAT_SHIPPING_CENTS = 499;
+// Flat shipping per order: higher when the order includes a console
+// (bigger, heavier box), standard for games and cards.
+export const CONSOLE_SHIPPING_CENTS = 699;
+export const STANDARD_SHIPPING_CENTS = 599;
+const CONSOLE_CATEGORY_SLUG = "consoles";
 
 const cartItemsSchema = z
   .array(
@@ -33,7 +37,10 @@ export async function createCheckoutSession(
 
   const products = await db.product.findMany({
     where: { id: { in: requested.map((i) => i.productId) } },
-    include: { images: { orderBy: { sortOrder: "asc" }, take: 1 } },
+    include: {
+      images: { orderBy: { sortOrder: "asc" }, take: 1 },
+      category: true,
+    },
   });
 
   const lines: {
@@ -60,6 +67,13 @@ export async function createCheckoutSession(
     0
   );
 
+  const hasConsole = lines.some(
+    (l) => l.product.category.slug === CONSOLE_CATEGORY_SLUG
+  );
+  const shippingCents = hasConsole
+    ? CONSOLE_SHIPPING_CENTS
+    : STANDARD_SHIPPING_CENTS;
+
   const order = await db.order.create({
     data: {
       email: "",
@@ -68,8 +82,8 @@ export async function createCheckoutSession(
       // Placeholder until the Stripe session exists (column is unique).
       stripeSessionId: `pending_${crypto.randomUUID()}`,
       subtotalCents,
-      shippingCents: FLAT_SHIPPING_CENTS,
-      totalCents: subtotalCents + FLAT_SHIPPING_CENTS,
+      shippingCents,
+      totalCents: subtotalCents + shippingCents,
       items: {
         create: lines.map((l) => ({
           productId: l.product.id,
@@ -104,7 +118,7 @@ export async function createCheckoutSession(
         shipping_rate_data: {
           type: "fixed_amount",
           display_name: "Standard shipping",
-          fixed_amount: { amount: FLAT_SHIPPING_CENTS, currency: "usd" },
+          fixed_amount: { amount: shippingCents, currency: "usd" },
           delivery_estimate: {
             minimum: { unit: "business_day", value: 3 },
             maximum: { unit: "business_day", value: 7 },
